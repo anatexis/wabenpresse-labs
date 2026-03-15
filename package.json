@@ -1,0 +1,9 @@
+{
+  "name": "wabenpresse-labs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-to-one startup website for a bee + juice press venture.",
+  "scripts": {
+    "start": "node server.mjs"
+  }
+}
