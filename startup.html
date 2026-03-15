@@ -8,9 +8,17 @@
       name="description"
       content="Interner Startup-Bereich fuer Wabenpresse Labs mit Operations, Orders und Finance."
     />
+    <meta name="theme-color" content="#1c2719" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="startup-page">
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
     <div class="page-noise" aria-hidden="true"></div>
     <div class="page-shell">
       <header class="topbar">
@@ -18,7 +26,16 @@
           <p class="eyebrow">Founder console</p>
           <a class="brand" href="#startup-hero">Wabenpresse Labs</a>
         </div>
-        <nav class="topnav" aria-label="Startup Navigation">
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="startup-nav"
+          aria-label="Navigation umschalten"
+        >
+          Menu
+        </button>
+        <nav class="topnav" id="startup-nav" aria-label="Startup Navigation">
           <a href="./index.html">Kundenseite</a>
           <a href="#operations">Operations</a>
           <a href="#orders">Orders</a>
@@ -26,171 +43,189 @@
         </nav>
       </header>
 
-      <main id="startup-root">
-        <section class="hero reveal startup-hero" id="startup-hero">
-          <div class="hero-copy">
-            <p class="eyebrow">Interner Bereich</p>
-            <h1>Das Founder-Dashboard ist absichtlich getrennt von der Kundenseite.</h1>
-            <p class="hero-text">
-              Hier liegen OKRs, Pipeline, Route-Planung, Orders und Runway.
-              Auf GitHub Pages ist das Passwort nur ein clientseitiges Gate,
-              also organisatorisch nuetzlich, aber nicht hart sicher.
-            </p>
-          </div>
-          <aside class="hero-panel stagger">
-            <div class="metric-card">
-              <span>Standardpasswort</span>
-              <strong>`waben2026`</strong>
-              <p>Direkt in `app.js` aendern, bevor du die Seite breit teilst.</p>
-            </div>
-            <div class="metric-card">
-              <span>Hinweis</span>
-              <strong>Kein echtes Auth-System</strong>
-              <p>Fuer Produktion spaeter mit Backend oder Access-Layer ersetzen.</p>
-            </div>
-          </aside>
-        </section>
-
-        <section class="login-gate panel" id="startup-gate">
-          <div class="panel-header">
-            <div>
-              <p class="kicker">Access</p>
-              <h3>Passwort eingeben</h3>
-            </div>
-          </div>
-          <form class="login-form" id="startup-password-form">
-            <label>
-              Founder Passwort
-              <input id="startup-password" type="password" placeholder="Passwort" required />
-            </label>
-            <button class="button button-primary" type="submit">Startup-Bereich entsperren</button>
-            <p class="payment-feedback" id="startup-feedback" aria-live="polite"></p>
-          </form>
-        </section>
-
-        <div class="startup-content is-locked" id="startup-content">
-          <section class="section reveal" id="operations">
-            <div class="section-heading">
-              <p class="eyebrow">Organisation</p>
-              <h2>Operating cockpit fuer 0 → 1</h2>
-              <p>
-                Fokus auf Management-Rhythmus: OKRs, Feldoperationen, Experimente,
-                Runway und ein schlichtes Kanban ohne Tool-Overhead.
+      <main id="main-content">
+        <div id="startup-root">
+          <section class="hero reveal startup-hero" id="startup-hero">
+            <div class="hero-copy">
+              <p class="eyebrow">Interner Bereich</p>
+              <h1>Das Founder-Dashboard ist absichtlich getrennt von der Kundenseite.</h1>
+              <p class="hero-text">
+                Hier liegen OKRs, Pipeline, Route-Planung, Orders und Runway.
+                Auf GitHub Pages ist das Passwort nur ein clientseitiges Gate,
+                also organisatorisch nuetzlich, aber nicht hart sicher.
               </p>
             </div>
-
-            <div class="ops-layout">
-              <article class="panel">
-                <div class="panel-header">
-                  <div>
-                    <p class="kicker">Weekly cadence</p>
-                    <h3>OKR Check</h3>
-                  </div>
-                  <span class="pill" id="okr-progress">0% erledigt</span>
-                </div>
-                <div class="checklist" id="okr-list"></div>
-              </article>
-
-              <article class="panel">
-                <div class="panel-header">
-                  <div>
-                    <p class="kicker">Field ops</p>
-                    <h3>Pilot-Routen</h3>
-                  </div>
-                  <span class="pill" id="route-count">0 Routen</span>
-                </div>
-                <form class="inline-form" id="route-form">
-                  <input id="route-site" type="text" placeholder="Standort" required />
-                  <input id="route-date" type="date" required />
-                  <input id="route-volume" type="number" min="50" step="50" placeholder="Liter" required />
-                  <button class="button button-secondary" type="submit">Route anlegen</button>
-                </form>
-                <div class="route-list" id="route-list"></div>
-              </article>
-            </div>
-
-            <div class="ops-layout board-layout">
-              <article class="panel board-panel">
-                <div class="panel-header">
-                  <div>
-                    <p class="kicker">Execution</p>
-                    <h3>Startup Board</h3>
-                  </div>
-                </div>
-                <form class="task-form" id="task-form">
-                  <input id="task-title" type="text" placeholder="Neue Aufgabe" required />
-                  <input id="task-owner" type="text" placeholder="Owner" required />
-                  <select id="task-priority">
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
-                  </select>
-                  <button class="button button-primary" type="submit">Task erfassen</button>
-                </form>
-                <div class="kanban" id="kanban"></div>
-              </article>
-
-              <article class="panel finance-panel">
-                <div class="panel-header">
-                  <div>
-                    <p class="kicker">Runway</p>
-                    <h3>Finance model</h3>
-                  </div>
-                </div>
-                <form class="finance-form" id="finance-form">
-                  <label>
-                    Monatlicher Burn
-                    <input id="burn-rate" type="number" min="1000" step="500" />
-                  </label>
-                  <label>
-                    Durchschnittlicher Auftragswert
-                    <input id="average-order" type="number" min="100" step="50" />
-                  </label>
-                  <label>
-                    Cash im Konto
-                    <input id="cash-balance" type="number" min="1000" step="1000" />
-                  </label>
-                  <button class="button button-secondary" type="submit">Modell speichern</button>
-                </form>
-                <div class="finance-metrics" id="finance-metrics"></div>
-              </article>
-            </div>
-
-            <article class="panel notes-panel">
-              <div class="panel-header">
-                <div>
-                  <p class="kicker">Founder memo</p>
-                  <h3>Entscheidungslog</h3>
-                </div>
+            <aside class="hero-panel stagger">
+              <div class="metric-card">
+                <span>Standardpasswort</span>
+                <strong><code>waben2026</code></strong>
+                <p>Direkt in <code>app.js</code> aendern, bevor du die Seite breit teilst.</p>
               </div>
-              <label class="notes-label">
-                Notizen
-                <textarea id="founder-notes" rows="5" placeholder="Welche Annahmen wurden diese Woche bestaetigt oder widerlegt?"></textarea>
+              <div class="metric-card">
+                <span>Hinweis</span>
+                <strong>Kein echtes Auth-System</strong>
+                <p>Fuer Produktion spaeter mit Backend oder Access-Layer ersetzen.</p>
+              </div>
+              <div class="metric-card">
+                <span>Demo-Status</span>
+                <strong id="startup-orders-metric">0 Orders</strong>
+                <p id="startup-revenue-metric">0 EUR lokal erfasst</p>
+              </div>
+            </aside>
+          </section>
+
+          <section class="signal-band reveal signal-band-startup" aria-label="Founder Fokus">
+            <p>Weniger Tool-Noise, mehr operative Klarheit</p>
+            <p>Lokale Demo-Daten, schnelle Pilotentscheidungen</p>
+            <p>GitHub-Pages-tauglich, aber bewusst als Demo markiert</p>
+          </section>
+
+          <section class="login-gate panel" id="startup-gate">
+            <div class="panel-header">
+              <div>
+                <p class="kicker">Access</p>
+                <h3>Passwort eingeben</h3>
+              </div>
+            </div>
+            <form class="login-form" id="startup-password-form">
+              <label>
+                Founder Passwort
+                <input id="startup-password" type="password" placeholder="Passwort" required />
               </label>
-            </article>
+              <button class="button button-primary" type="submit">Startup-Bereich entsperren</button>
+              <p class="payment-feedback" id="startup-feedback" aria-live="polite"></p>
+            </form>
           </section>
 
-          <section class="section reveal" id="orders">
-            <div class="section-heading">
-              <p class="eyebrow">Order log</p>
-              <h2>Zuletzt bezahlte Bestellungen</h2>
-              <p>
-                Alle Demo-Orders aus der Kundenseite landen hier im internen Bereich.
-              </p>
-            </div>
-            <article class="panel orders-panel">
-              <div class="panel-header">
-                <div>
-                  <p class="kicker">Paid</p>
-                  <h3>Incoming orders</h3>
-                </div>
-                <button class="button button-secondary" id="clear-orders" type="button">Bestellungen loeschen</button>
+          <div class="startup-content is-locked" id="startup-content">
+            <section class="section reveal" id="operations">
+              <div class="section-heading">
+                <p class="eyebrow">Organisation</p>
+                <h2>Operating cockpit fuer 0 → 1</h2>
+                <p>
+                  Fokus auf Management-Rhythmus: OKRs, Feldoperationen, Experimente,
+                  Runway und ein schlichtes Kanban ohne Tool-Overhead.
+                </p>
               </div>
-              <div class="order-list" id="order-list"></div>
-            </article>
-          </section>
+
+              <div class="ops-layout">
+                <article class="panel">
+                  <div class="panel-header">
+                    <div>
+                      <p class="kicker">Weekly cadence</p>
+                      <h3>OKR Check</h3>
+                    </div>
+                    <span class="pill" id="okr-progress">0% erledigt</span>
+                  </div>
+                  <div class="checklist" id="okr-list"></div>
+                </article>
+
+                <article class="panel">
+                  <div class="panel-header">
+                    <div>
+                      <p class="kicker">Field ops</p>
+                      <h3>Pilot-Routen</h3>
+                    </div>
+                    <span class="pill" id="route-count">0 Routen</span>
+                  </div>
+                  <form class="inline-form" id="route-form">
+                    <input id="route-site" type="text" placeholder="Standort" required />
+                    <input id="route-date" type="date" required />
+                    <input id="route-volume" type="number" min="50" step="50" placeholder="Liter" required />
+                    <button class="button button-secondary" type="submit">Route anlegen</button>
+                  </form>
+                  <div class="route-list" id="route-list"></div>
+                </article>
+              </div>
+
+              <div class="ops-layout board-layout">
+                <article class="panel board-panel">
+                  <div class="panel-header">
+                    <div>
+                      <p class="kicker">Execution</p>
+                      <h3>Startup Board</h3>
+                    </div>
+                  </div>
+                  <form class="task-form" id="task-form">
+                    <input id="task-title" type="text" placeholder="Neue Aufgabe" required />
+                    <input id="task-owner" type="text" placeholder="Owner" required />
+                    <select id="task-priority">
+                      <option value="High">High</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                    </select>
+                    <button class="button button-primary" type="submit">Task erfassen</button>
+                  </form>
+                  <div class="kanban" id="kanban"></div>
+                </article>
+
+                <article class="panel finance-panel">
+                  <div class="panel-header">
+                    <div>
+                      <p class="kicker">Runway</p>
+                      <h3>Finance model</h3>
+                    </div>
+                  </div>
+                  <form class="finance-form" id="finance-form">
+                    <label>
+                      Monatlicher Burn
+                      <input id="burn-rate" type="number" min="1000" step="500" />
+                    </label>
+                    <label>
+                      Durchschnittlicher Auftragswert
+                      <input id="average-order" type="number" min="100" step="50" />
+                    </label>
+                    <label>
+                      Cash im Konto
+                      <input id="cash-balance" type="number" min="1000" step="1000" />
+                    </label>
+                    <button class="button button-secondary" type="submit">Modell speichern</button>
+                  </form>
+                  <div class="finance-metrics" id="finance-metrics"></div>
+                </article>
+              </div>
+
+              <article class="panel notes-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="kicker">Founder memo</p>
+                    <h3>Entscheidungslog</h3>
+                  </div>
+                </div>
+                <label class="notes-label">
+                  Notizen
+                  <textarea id="founder-notes" rows="5" placeholder="Welche Annahmen wurden diese Woche bestaetigt oder widerlegt?"></textarea>
+                </label>
+              </article>
+            </section>
+
+            <section class="section reveal" id="orders">
+              <div class="section-heading">
+                <p class="eyebrow">Order log</p>
+                <h2>Zuletzt bezahlte Bestellungen</h2>
+                <p>
+                  Alle Demo-Orders aus der Kundenseite landen hier im internen Bereich.
+                </p>
+              </div>
+              <article class="panel orders-panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="kicker">Paid</p>
+                    <h3>Incoming orders</h3>
+                  </div>
+                  <button class="button button-secondary" id="clear-orders" type="button">Bestellungen loeschen</button>
+                </div>
+                <div class="order-list" id="order-list"></div>
+              </article>
+            </section>
+          </div>
         </div>
       </main>
+
+      <footer class="site-footer">
+        <p>Founder Console fuer Pilotbetrieb, Orders und Runway.</p>
+        <a href="./index.html">Zur Kundenseite</a>
+      </footer>
     </div>
 
     <script src="./app.js"></script>

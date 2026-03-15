@@ -21,6 +21,12 @@ npm start
 
 Dann `http://localhost:4173` im Browser oeffnen.
 
+## Deployment auf GitHub Pages
+
+- Das Projekt ist statisch und kann direkt aus dem Repo-Root auf GitHub Pages ausgeliefert werden.
+- Nach einem Push auf den konfigurierten Branch aktualisiert GitHub Pages `index.html` und macht `startup.html` als zweite Seite verfuegbar.
+- Der lokale `server.mjs` ist nur fuer die lokale Vorschau gedacht und wird auf GitHub Pages nicht benoetigt.
+
 ## Was enthalten ist
 
 - Landingpage mit Startup-Konzept, Positionierung und 180-Tage-Plan
@@ -31,6 +37,6 @@ Dann `http://localhost:4173` im Browser oeffnen.
 
 ## Produktionsnahe Weiterentwicklung
 
-- Passwort-Stub in [`app.js`](/home/christoph/Dokumente/Baumhaus/Programmieren/RUDL/app.js) durch echte Authentifizierung ersetzen
-- Zahlungsstub in [`app.js`](/home/christoph/Dokumente/Baumhaus/Programmieren/RUDL/app.js) gegen Stripe oder Adyen austauschen
+- Passwort-Stub in `app.js` durch echte Authentifizierung ersetzen
+- Zahlungsstub in `app.js` gegen Stripe oder Adyen austauschen
 - Datenhaltung von `localStorage` in echtes Backend migrieren

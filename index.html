@@ -8,9 +8,22 @@
       name="description"
       content="Wabenpresse Labs bringt Bienen, mobile Saftpressen und lokale Obstlogistik fuer Gemeinden, Hoefe und Firmen zusammen."
     />
+    <meta name="theme-color" content="#1c2719" />
+    <meta property="og:title" content="Wabenpresse Labs" />
+    <meta
+      property="og:description"
+      content="Pilotseite fuer lokale Press-Tage, Bienenstandorte und sichtbare Nachhaltigkeitsprojekte."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
     <div class="page-noise" aria-hidden="true"></div>
     <div class="page-shell">
       <header class="topbar">
@@ -18,7 +31,16 @@
           <p class="eyebrow">Pollination x pressing x local brand systems</p>
           <a class="brand" href="#hero">Wabenpresse Labs</a>
         </div>
-        <nav class="topnav" aria-label="Hauptnavigation">
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="Navigation umschalten"
+        >
+          Menu
+        </button>
+        <nav class="topnav" id="site-nav" aria-label="Hauptnavigation">
           <a href="#marketplace">Angebot</a>
           <a href="#how-it-works">Ablauf</a>
           <a href="#plan">0 → 1</a>
@@ -27,7 +49,7 @@
         </nav>
       </header>
 
-      <main>
+      <main id="main-content">
         <section class="hero reveal" id="hero">
           <div class="hero-copy">
             <p class="eyebrow">Kundenseite</p>
@@ -50,16 +72,22 @@
               <p>bereits geplantes Pressvolumen in der laufenden Pipeline</p>
             </div>
             <div class="metric-card">
-              <span>Zielkunde</span>
-              <strong>Gemeinden, Hoefe, Offices</strong>
-              <p>mit Fruchtueberschuss, ESG-Zielen und Wunsch nach Sichtbarkeit</p>
+              <span>Geplante Standorte</span>
+              <strong id="planned-sites-metric">0 Standorte</strong>
+              <p>aktive Routen im Demo-System fuer die naechsten Press-Tage</p>
             </div>
             <div class="metric-card">
-              <span>Format</span>
-              <strong>Service + Event + Produkt</strong>
-              <p>Bestaeubung, Pressung und Vertrieb in einem gebuendelten Angebot</p>
+              <span>Demo-Umsatz</span>
+              <strong id="booked-revenue-metric">0 EUR</strong>
+              <p>lokal gespeicherte Bestellungen aus dem Sandbox-Checkout</p>
             </div>
           </aside>
+        </section>
+
+        <section class="signal-band reveal" aria-label="Arbeitsprinzipien">
+          <p>Vor-Ort-Produktion statt Nachhaltigkeitsfolie</p>
+          <p>Ernte, Event und Produkt in einem Ablauf</p>
+          <p>Markensignal fuer Gemeinden, Hoefe und Teams</p>
         </section>
 
         <section class="thesis-grid reveal">
@@ -233,6 +261,23 @@
           </div>
         </section>
       </main>
+
+      <aside class="mobile-dock" aria-label="Schnellzugriff mobil">
+        <div class="mobile-dock-copy">
+          <span class="mobile-dock-label">Pilot basket</span>
+          <strong id="mobile-dock-total">0 EUR</strong>
+          <p id="mobile-dock-count">0 Positionen im Warenkorb</p>
+        </div>
+        <div class="mobile-dock-actions">
+          <a class="button button-secondary" href="#marketplace">Angebot</a>
+          <a class="button button-primary" href="#checkout">Checkout</a>
+        </div>
+      </aside>
+
+      <footer class="site-footer">
+        <p>Wabenpresse Labs baut lokale Press-Tage als sichtbare Betriebsrituale.</p>
+        <a href="./startup.html">Zum Founder-Bereich</a>
+      </footer>
     </div>
 
     <script src="./app.js"></script>

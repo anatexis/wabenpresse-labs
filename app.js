@@ -1,5 +1,11 @@
 const STARTUP_PASSWORD = "waben2026";
 const STARTUP_SESSION_KEY = "wabenpresse-founder-auth";
+const STORAGE_KEY = "wabenpresse-state";
+const TASK_COLUMNS = [
+  { id: "discover", label: "Discover" },
+  { id: "build", label: "Build" },
+  { id: "pilot", label: "Pilot" },
+];
 
 const offers = [
   {
@@ -66,26 +72,26 @@ const defaultState = {
   cart: [],
   orders: [],
   routes: [
-    { id: crypto.randomUUID(), site: "Biohof Morgenrot", date: "2026-04-08", volume: 450 },
-    { id: crypto.randomUUID(), site: "Stadtpark Nord", date: "2026-04-11", volume: 300 },
+    { id: createId(), site: "Biohof Morgenrot", date: "2026-04-08", volume: 450 },
+    { id: createId(), site: "Stadtpark Nord", date: "2026-04-11", volume: 300 },
   ],
   tasks: [
     {
-      id: crypto.randomUUID(),
+      id: createId(),
       title: "Pilotvertrag fuer ersten Gemeindestandort abschliessen",
       owner: "Christoph",
       priority: "High",
       status: "discover",
     },
     {
-      id: crypto.randomUUID(),
+      id: createId(),
       title: "Mobile Press-Checkliste in 12 Schritten standardisieren",
       owner: "Ops",
       priority: "Medium",
       status: "build",
     },
     {
-      id: crypto.randomUUID(),
+      id: createId(),
       title: "Employer-Branding-Angebot fuer Offices testen",
       owner: "Sales",
       priority: "Low",
@@ -93,10 +99,10 @@ const defaultState = {
     },
   ],
   okrs: [
-    { id: crypto.randomUUID(), text: "3 zahlende Pilotkunden bis Ende Q2", done: true },
-    { id: crypto.randomUUID(), text: "Deckungsbeitrag pro Press-Tag positiv halten", done: false },
-    { id: crypto.randomUUID(), text: "Mindestens 2 wiederkehrende Abo-Kunden gewinnen", done: false },
-    { id: crypto.randomUUID(), text: "Sicherheits- und Bee-Care SOP dokumentieren", done: true },
+    { id: createId(), text: "3 zahlende Pilotkunden bis Ende Q2", done: true },
+    { id: createId(), text: "Deckungsbeitrag pro Press-Tag positiv halten", done: false },
+    { id: createId(), text: "Mindestens 2 wiederkehrende Abo-Kunden gewinnen", done: false },
+    { id: createId(), text: "Sicherheits- und Bee-Care SOP dokumentieren", done: true },
   ],
   finance: {
     burnRate: 8500,
@@ -107,22 +113,104 @@ const defaultState = {
     "Wichtigste Annahme: Gemeinden kaufen nicht nur Nachhaltigkeit, sondern sichtbare Buergerbeteiligung. Jeder Pilot muss ein verwertbares Story-Asset erzeugen.",
 };
 
-const state = loadState();
+let state = loadState();
 
 document.addEventListener("DOMContentLoaded", () => {
+  initNavigation();
   initSharedMetrics();
   initCustomerPage();
   initStartupPage();
+  initStorageSync();
 });
 
-function initSharedMetrics() {
-  const northStarMetric = document.querySelector("#north-star-metric");
-  if (!northStarMetric) {
+function createId() {
+  if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return `wp-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function cloneDefaultState() {
+  if (typeof structuredClone === "function") {
+    return structuredClone(defaultState);
+  }
+
+  return JSON.parse(JSON.stringify(defaultState));
+}
+
+function initNavigation() {
+  const nav = document.querySelector(".topnav");
+  const toggle = document.querySelector(".nav-toggle");
+
+  if (!nav || !toggle) {
     return;
   }
 
+  const closeMenu = () => {
+    nav.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("menu-open");
+  };
+
+  toggle.addEventListener("click", () => {
+    const isOpen = nav.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    document.body.classList.toggle("menu-open", isOpen && window.innerWidth <= 720);
+  });
+
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 720) {
+      closeMenu();
+    }
+  });
+}
+
+function initStorageSync() {
+  window.addEventListener("storage", (event) => {
+    if (event.key !== STORAGE_KEY) {
+      return;
+    }
+
+    state = loadState();
+    refreshVisibleState();
+  });
+}
+
+function initSharedMetrics() {
+  const northStarMetric = document.querySelector("#north-star-metric");
+  const plannedSitesMetric = document.querySelector("#planned-sites-metric");
+  const bookedRevenueMetric = document.querySelector("#booked-revenue-metric");
+  const startupOrdersMetric = document.querySelector("#startup-orders-metric");
+  const startupRevenueMetric = document.querySelector("#startup-revenue-metric");
   const liters = state.routes.reduce((sum, route) => sum + Number(route.volume || 0), 0);
-  northStarMetric.textContent = `${liters} Liter`;
+  const bookedRevenue = state.orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+
+  if (northStarMetric) {
+    northStarMetric.textContent = `${liters} Liter`;
+  }
+
+  if (plannedSitesMetric) {
+    plannedSitesMetric.textContent = `${state.routes.length} Standorte`;
+  }
+
+  if (bookedRevenueMetric) {
+    bookedRevenueMetric.textContent = euro(bookedRevenue);
+  }
+
+  if (startupOrdersMetric) {
+    startupOrdersMetric.textContent = `${state.orders.length} Orders`;
+  }
+
+  if (startupRevenueMetric) {
+    startupRevenueMetric.textContent = `${euro(bookedRevenue)} lokal erfasst`;
+  }
+
+  updateMobileDock();
 }
 
 function initCustomerPage() {
@@ -150,7 +238,7 @@ function initCustomerPage() {
   configForm.addEventListener("submit", (event) => {
     event.preventDefault();
     addCartItem({
-      id: crypto.randomUUID(),
+      id: createId(),
       title: `Custom Press Day · ${litersInput.value}L / ${jarsInput.value} Glaeser`,
       price: calculateConfigPrice(litersInput, jarsInput, storyPackageInput),
       type: "custom",
@@ -166,10 +254,10 @@ function initCustomerPage() {
 
   paymentForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    paymentFeedback.textContent = "";
+    setFeedback(paymentFeedback, "");
 
     if (!state.cart.length) {
-      paymentFeedback.textContent = "Der Warenkorb ist leer.";
+      setFeedback(paymentFeedback, "Der Warenkorb ist leer.", "error");
       return;
     }
 
@@ -181,12 +269,17 @@ function initCustomerPage() {
     const cardCvc = document.querySelector("#card-cvc").value.trim();
 
     if (!company || !name || !email) {
-      paymentFeedback.textContent = "Bitte Kundendaten vollstaendig ausfuellen.";
+      setFeedback(paymentFeedback, "Bitte Kundendaten vollstaendig ausfuellen.", "error");
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setFeedback(paymentFeedback, "Bitte eine gueltige E-Mail-Adresse eingeben.", "error");
       return;
     }
 
     if (!/^\d{16}$/.test(cardNumber) || !/^\d{2}\/\d{2}$/.test(cardExpiry) || !/^\d{3,4}$/.test(cardCvc)) {
-      paymentFeedback.textContent = "Kartendaten sind formal ungueltig.";
+      setFeedback(paymentFeedback, "Kartendaten sind formal ungueltig.", "error");
       return;
     }
 
@@ -204,8 +297,9 @@ function initCustomerPage() {
     state.cart = [];
     persistState();
     renderCart(cartList, cartTotalLabel);
+    initSharedMetrics();
     paymentForm.reset();
-    paymentFeedback.textContent = `Zahlung erfolgreich autorisiert. Bestellnummer ${order.id}.`;
+    setFeedback(paymentFeedback, `Zahlung erfolgreich autorisiert. Bestellnummer ${order.id}.`, "success");
   });
 }
 
@@ -224,16 +318,16 @@ function initStartupPage() {
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    feedback.textContent = "";
+    setFeedback(feedback, "");
 
     const password = passwordInput.value.trim();
     if (!password) {
-      feedback.textContent = "Bitte ein Passwort eingeben.";
+      setFeedback(feedback, "Bitte ein Passwort eingeben.", "error");
       return;
     }
 
     if (password !== STARTUP_PASSWORD) {
-      feedback.textContent = "Passwort falsch.";
+      setFeedback(feedback, "Passwort falsch.", "error");
       return;
     }
 
@@ -246,7 +340,7 @@ function initStartupPage() {
   logoutButton.addEventListener("click", () => {
     window.sessionStorage.removeItem(STARTUP_SESSION_KEY);
     lockStartupArea(gate, content);
-    feedback.textContent = "";
+    setFeedback(feedback, "");
   });
 
   if (window.sessionStorage.getItem(STARTUP_SESSION_KEY) === "true") {
@@ -279,13 +373,55 @@ function initStartupDashboard() {
   renderStartupData();
 }
 
+function refreshVisibleState() {
+  initSharedMetrics();
+
+  const cartList = document.querySelector("#cart-list");
+  const cartTotalLabel = document.querySelector("#cart-total-label");
+  if (cartList && cartTotalLabel) {
+    renderCart(cartList, cartTotalLabel);
+  }
+
+  const configPrice = document.querySelector("#config-price");
+  if (configPrice) {
+    updateConfiguratorPrice(
+      document.querySelector("#liters"),
+      document.querySelector("#jars"),
+      document.querySelector("#story-package"),
+      configPrice,
+    );
+  }
+
+  if (document.querySelector("#startup-root")) {
+    renderStartupData();
+  }
+}
+
+function updateMobileDock() {
+  const totalLabel = document.querySelector("#mobile-dock-total");
+  const countLabel = document.querySelector("#mobile-dock-count");
+  const dock = document.querySelector(".mobile-dock");
+
+  if (!totalLabel || !countLabel || !dock) {
+    return;
+  }
+
+  const quantity = state.cart.reduce((sum, item) => sum + safeNumber(item.quantity, 0), 0);
+  totalLabel.textContent = euro(cartTotal());
+  countLabel.textContent = `${quantity} ${quantity === 1 ? "Position" : "Positionen"} im Warenkorb`;
+  dock.classList.toggle("is-active", quantity > 0);
+}
+
 function renderStartupData() {
   renderOkrs(document.querySelector("#okr-list"), document.querySelector("#okr-progress"));
   renderRoutes(document.querySelector("#route-list"), document.querySelector("#route-count"));
   renderTasks(document.querySelector("#kanban"));
   renderFinance(document.querySelector("#finance-metrics"));
   renderOrders(document.querySelector("#order-list"));
-  document.querySelector("#founder-notes").value = state.notes;
+  const notesField = document.querySelector("#founder-notes");
+  if (notesField) {
+    notesField.value = state.notes;
+  }
 }
 
 function unlockStartupArea(gate, content) {
@@ -299,25 +435,21 @@ function lockStartupArea(gate, content) {
 }
 
 function loadState() {
-  const raw = window.localStorage.getItem("wabenpresse-state");
+  const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) {
-    return structuredClone(defaultState);
+    return cloneDefaultState();
   }
 
   try {
     const parsed = JSON.parse(raw);
-    return {
-      ...structuredClone(defaultState),
-      ...parsed,
-      finance: { ...defaultState.finance, ...(parsed.finance || {}) },
-    };
+    return normalizeState(parsed);
   } catch (error) {
-    return structuredClone(defaultState);
+    return cloneDefaultState();
   }
 }
 
 function persistState() {
-  window.localStorage.setItem("wabenpresse-state", JSON.stringify(state));
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 function euro(amount) {
@@ -326,6 +458,139 @@ function euro(amount) {
     currency: "EUR",
     maximumFractionDigits: 0,
   }).format(amount);
+}
+
+function normalizeState(parsed) {
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return cloneDefaultState();
+  }
+
+  const base = cloneDefaultState();
+  const next = {
+    ...base,
+    ...parsed,
+    cart: normalizeCart(parsed.cart),
+    orders: normalizeOrders(parsed.orders),
+    routes: normalizeRoutes(parsed.routes, base.routes),
+    tasks: normalizeTasks(parsed.tasks, base.tasks),
+    okrs: normalizeOkrs(parsed.okrs, base.okrs),
+    finance: normalizeFinance(parsed.finance, base.finance),
+    notes: typeof parsed.notes === "string" ? parsed.notes : base.notes,
+  };
+
+  return next;
+}
+
+function normalizeCart(cart) {
+  if (!Array.isArray(cart)) {
+    return [];
+  }
+
+  return cart
+    .filter((item) => item && typeof item.title === "string")
+    .map((item) => ({
+      id: typeof item.id === "string" ? item.id : createId(),
+      title: item.title,
+      price: safeNumber(item.price),
+      quantity: Math.max(1, Math.round(safeNumber(item.quantity, 1))),
+      type: typeof item.type === "string" ? item.type : "offer",
+    }));
+}
+
+function normalizeOrders(orders) {
+  if (!Array.isArray(orders)) {
+    return [];
+  }
+
+  return orders
+    .filter((order) => order && typeof order.company === "string")
+    .map((order) => ({
+      id: typeof order.id === "string" ? order.id : `WP-${Math.floor(Math.random() * 900000 + 100000)}`,
+      company: order.company,
+      name: typeof order.name === "string" ? order.name : "",
+      email: typeof order.email === "string" ? order.email : "",
+      total: safeNumber(order.total),
+      items: normalizeCart(order.items),
+      createdAt: typeof order.createdAt === "string" ? order.createdAt : new Date().toISOString(),
+    }));
+}
+
+function normalizeRoutes(routes, fallback) {
+  if (!Array.isArray(routes) || !routes.length) {
+    return fallback;
+  }
+
+  return routes
+    .filter((route) => route && typeof route.site === "string")
+    .map((route) => ({
+      id: typeof route.id === "string" ? route.id : createId(),
+      site: route.site,
+      date: typeof route.date === "string" ? route.date : "",
+      volume: Math.max(0, safeNumber(route.volume)),
+    }));
+}
+
+function normalizeTasks(tasks, fallback) {
+  if (!Array.isArray(tasks) || !tasks.length) {
+    return fallback;
+  }
+
+  return tasks
+    .filter((task) => task && typeof task.title === "string")
+    .map((task) => ({
+      id: typeof task.id === "string" ? task.id : createId(),
+      title: task.title,
+      owner: typeof task.owner === "string" ? task.owner : "Team",
+      priority: ["High", "Medium", "Low"].includes(task.priority) ? task.priority : "Medium",
+      status: TASK_COLUMNS.some((column) => column.id === task.status) ? task.status : "discover",
+    }));
+}
+
+function normalizeOkrs(okrs, fallback) {
+  if (!Array.isArray(okrs) || !okrs.length) {
+    return fallback;
+  }
+
+  return okrs
+    .filter((item) => item && typeof item.text === "string")
+    .map((item) => ({
+      id: typeof item.id === "string" ? item.id : createId(),
+      text: item.text,
+      done: Boolean(item.done),
+    }));
+}
+
+function normalizeFinance(finance, fallback) {
+  if (!finance || typeof finance !== "object") {
+    return { ...fallback };
+  }
+
+  return {
+    burnRate: safeNumber(finance.burnRate, fallback.burnRate),
+    averageOrder: safeNumber(finance.averageOrder, fallback.averageOrder),
+    cashBalance: safeNumber(finance.cashBalance, fallback.cashBalance),
+  };
+}
+
+function safeNumber(value, fallback = 0) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : fallback;
+}
+
+function setFeedback(element, message, tone) {
+  if (!element) {
+    return;
+  }
+
+  element.classList.remove("is-success", "is-error");
+  if (tone === "success") {
+    element.classList.add("is-success");
+  }
+  if (tone === "error") {
+    element.classList.add("is-error");
+  }
+
+  element.textContent = message;
 }
 
 function renderProducts(productGrid) {
@@ -393,9 +658,14 @@ function addCartItem(item) {
   }
 
   persistState();
+  initSharedMetrics();
 }
 
 function renderCart(cartList, cartTotalLabel) {
+  if (!cartList || !cartTotalLabel) {
+    return;
+  }
+
   cartList.innerHTML = "";
 
   if (!state.cart.length) {
@@ -448,6 +718,10 @@ function cartTotal() {
 }
 
 function renderOrders(orderList) {
+  if (!orderList) {
+    return;
+  }
+
   orderList.innerHTML = "";
 
   if (!state.orders.length) {
@@ -475,12 +749,17 @@ function clearOrders() {
   persistState();
   renderOrders(document.querySelector("#order-list"));
   renderFinance(document.querySelector("#finance-metrics"));
+  initSharedMetrics();
 }
 
 function renderOkrs(okrList, okrProgress) {
+  if (!okrList || !okrProgress) {
+    return;
+  }
+
   okrList.innerHTML = "";
   const done = state.okrs.filter((item) => item.done).length;
-  const progress = Math.round((done / state.okrs.length) * 100);
+  const progress = state.okrs.length ? Math.round((done / state.okrs.length) * 100) : 0;
   okrProgress.textContent = `${progress}% erledigt`;
 
   state.okrs.forEach((item) => {
@@ -505,8 +784,12 @@ function handleRouteSubmit(event) {
   const date = document.querySelector("#route-date").value;
   const volume = Number(document.querySelector("#route-volume").value);
 
+  if (!site || !date || volume <= 0) {
+    return;
+  }
+
   state.routes.unshift({
-    id: crypto.randomUUID(),
+    id: createId(),
     site,
     date,
     volume,
@@ -519,6 +802,10 @@ function handleRouteSubmit(event) {
 }
 
 function renderRoutes(routeList, routeCount) {
+  if (!routeList || !routeCount) {
+    return;
+  }
+
   routeList.innerHTML = "";
   routeCount.textContent = `${state.routes.length} Routen`;
 
@@ -559,8 +846,12 @@ function handleTaskSubmit(event) {
   const owner = document.querySelector("#task-owner").value.trim();
   const priority = document.querySelector("#task-priority").value;
 
+  if (!title || !owner) {
+    return;
+  }
+
   state.tasks.unshift({
-    id: crypto.randomUUID(),
+    id: createId(),
     title,
     owner,
     priority,
@@ -573,15 +864,13 @@ function handleTaskSubmit(event) {
 }
 
 function renderTasks(kanban) {
-  const columns = [
-    { id: "discover", label: "Discover" },
-    { id: "build", label: "Build" },
-    { id: "pilot", label: "Pilot" },
-  ];
+  if (!kanban) {
+    return;
+  }
 
   kanban.innerHTML = "";
 
-  columns.forEach((column) => {
+  TASK_COLUMNS.forEach((column) => {
     const wrapper = document.createElement("section");
     wrapper.className = "kanban-column";
     wrapper.innerHTML = `
@@ -608,7 +897,7 @@ function renderTasks(kanban) {
       `;
       const actions = card.querySelector(".task-actions");
 
-      columns
+      TASK_COLUMNS
         .filter((entry) => entry.id !== task.status)
         .forEach((target) => {
           const button = document.createElement("button");
@@ -639,6 +928,10 @@ function renderTasks(kanban) {
 }
 
 function renderFinance(financeMetrics) {
+  if (!financeMetrics) {
+    return;
+  }
+
   const burnRateInput = document.querySelector("#burn-rate");
   const averageOrderInput = document.querySelector("#average-order");
   const cashBalanceInput = document.querySelector("#cash-balance");
@@ -649,8 +942,11 @@ function renderFinance(financeMetrics) {
     cashBalanceInput.value = state.finance.cashBalance;
   }
 
-  const ordersNeeded = Math.ceil(state.finance.burnRate / state.finance.averageOrder);
-  const runwayMonths = (state.finance.cashBalance / state.finance.burnRate).toFixed(1);
+  const averageOrder = safeNumber(state.finance.averageOrder);
+  const burnRate = safeNumber(state.finance.burnRate);
+  const cashBalance = safeNumber(state.finance.cashBalance);
+  const ordersNeeded = averageOrder > 0 ? Math.ceil(burnRate / averageOrder) : "n/a";
+  const runwayMonths = burnRate > 0 ? `${(cashBalance / burnRate).toFixed(1)} Monate` : "Unbegrenzt";
   const bookedRevenue = state.orders.reduce((sum, order) => sum + order.total, 0);
 
   financeMetrics.innerHTML = `
@@ -661,7 +957,7 @@ function renderFinance(financeMetrics) {
     </div>
     <div class="finance-stat">
       <span>Runway</span>
-      <strong>${runwayMonths} Monate</strong>
+      <strong>${runwayMonths}</strong>
       <p>Auf Basis von Cash im Konto und dem eingetragenen monatlichen Burn.</p>
     </div>
     <div class="finance-stat">
@@ -675,15 +971,19 @@ function renderFinance(financeMetrics) {
 function handleFinanceSubmit(event) {
   event.preventDefault();
   state.finance = {
-    burnRate: Number(document.querySelector("#burn-rate").value),
-    averageOrder: Number(document.querySelector("#average-order").value),
-    cashBalance: Number(document.querySelector("#cash-balance").value),
+    burnRate: Math.max(0, safeNumber(document.querySelector("#burn-rate").value, state.finance.burnRate)),
+    averageOrder: Math.max(0, safeNumber(document.querySelector("#average-order").value, state.finance.averageOrder)),
+    cashBalance: Math.max(0, safeNumber(document.querySelector("#cash-balance").value, state.finance.cashBalance)),
   };
   persistState();
   renderFinance(document.querySelector("#finance-metrics"));
 }
 
 function renderTimeline(timeline) {
+  if (!timeline) {
+    return;
+  }
+
   timeline.innerHTML = "";
   phases.forEach((phase) => {
     const card = document.createElement("article");
