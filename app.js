@@ -2,69 +2,69 @@ const STARTUP_PASSWORD = "waben2026";
 const STARTUP_SESSION_KEY = "wabenpresse-founder-auth";
 const STORAGE_KEY = "wabenpresse-state";
 const TASK_COLUMNS = [
-  { id: "discover", label: "Discover" },
-  { id: "build", label: "Build" },
+  { id: "discover", label: "Klärung" },
+  { id: "build", label: "Vorbereitung" },
   { id: "pilot", label: "Pilot" },
 ];
 
 const offers = [
   {
     id: "orchard-launch",
-    title: "Orchard Launch",
+    title: "Standortstart",
     description:
-      "Standortanalyse, zwei Bienenboxen, Sicherheitscheck und ein erster Press-Tag zur Markenbildung.",
+      "Standortanalyse, zwei Bienenboxen, Sicherheitscheck und ein erster Press-Tag für ein sichtbares Auftaktformat.",
     price: 1490,
-    tag: "B2B Pilot",
+    tag: "Pilotpaket",
     outcome: "In 14 Tagen einsatzbereit",
   },
   {
     id: "press-day",
-    title: "Community Press Day",
+    title: "Gemeinsamer Press-Tag",
     description:
-      "Mobile Saftpresse, Abfuellung, Helferbriefing und Live-Verkauf fuer Gemeinden, Schulen oder Firmenhoefe.",
+      "Mobile Saftpresse, Abfüllung, Helferbriefing und Vor-Ort-Verkauf für Gemeinden, Schulen oder Firmenhöfe.",
     price: 890,
-    tag: "Event Umsatz",
+    tag: "Eventformat",
     outcome: "Bis zu 600 Liter pro Tag",
   },
   {
     id: "nectar-subscription",
-    title: "Nectar Subscription",
+    title: "Honig- & Saft-Abo",
     description:
-      "Monatliche Box mit Saft, Honig und Standortstory fuer Teams, Kunden oder Anwohner.",
+      "Monatliche Box mit Saft, Honig und Standortgeschichte für Teams, Kundschaft oder Anwohner.",
     price: 39,
-    tag: "Recurring Revenue",
+    tag: "Wiederkehrend",
     outcome: "Preis pro Box",
   },
 ];
 
 const phases = [
   {
-    phase: "Phase 01",
-    title: "Problem / ICP",
-    metric: "10 Tiefeninterviews, 3 bezahlte Piloten",
+    phase: "Baustein 01",
+    title: "Standortaufnahme",
+    metric: "Vor-Ort-Check, Sicherheitsrahmen und Mengenbild",
     details:
-      "Fokus auf Gemeinden mit Streuobst, Biohoefe mit Tourismusbezug und Firmenstandorte mit ESG-Budget.",
+      "Wir klären Obstmenge, Zugänge, Flächen, Wasser, Strom und das passende Format für euren Standort.",
   },
   {
-    phase: "Phase 02",
-    title: "Pilot Ops",
-    metric: "90% puenktliche Press-Tage",
+    phase: "Baustein 02",
+    title: "Press-Tag",
+    metric: "Aufbau, Pressung, Abfüllung und Ablaufsteuerung",
     details:
-      "Standardisierte Sicherheitsablaeufe, Presslogistik, Bee-Care Checklists und ein fester Wochenrhythmus.",
+      "Das Team bringt Material, führt den Einsatz durch und hält den Tag für Gäste, Mitarbeitende oder Bürger sauber strukturiert.",
   },
   {
-    phase: "Phase 03",
-    title: "Repeatability",
-    metric: "3 Wiederholungsbuchungen pro Standorttyp",
+    phase: "Baustein 03",
+    title: "Produktpaket",
+    metric: "Saft, Honig und sichtbares Ergebnis",
     details:
-      "Nur Angebote skalieren, die ohne Founder-Sonderlocken replizierbar und deckungsbeitragspositiv sind.",
+      "Am Ende stehen abgefüllte Produkte und ein Format, das intern oder extern direkt weiterverwendet werden kann.",
   },
   {
-    phase: "Phase 04",
-    title: "Cluster Expansion",
-    metric: "Eine Stadt, ein Vertriebsskript, positive Unit Economics",
+    phase: "Baustein 04",
+    title: "Kommunikationspaket",
+    metric: "Optional mit Story, Fotomoment und Aktivierung",
     details:
-      "Erst lokal dominieren, dann benachbarte Landkreise mit denselben Maschinen, Wegen und Narrativen erschliessen.",
+      "Wer möchte, ergänzt das Format um ein kleines Inhaltspaket für Teamkommunikation, Bürgeransprache oder Markenarbeit.",
   },
 ];
 
@@ -78,23 +78,23 @@ const defaultState = {
   tasks: [
     {
       id: createId(),
-      title: "Pilotvertrag fuer ersten Gemeindestandort abschliessen",
+      title: "Pilotvertrag für den ersten Gemeindestandort abschließen",
       owner: "Christoph",
-      priority: "High",
+      priority: "Hoch",
       status: "discover",
     },
     {
       id: createId(),
       title: "Mobile Press-Checkliste in 12 Schritten standardisieren",
-      owner: "Ops",
-      priority: "Medium",
+      owner: "Betrieb",
+      priority: "Mittel",
       status: "build",
     },
     {
       id: createId(),
-      title: "Employer-Branding-Angebot fuer Offices testen",
-      owner: "Sales",
-      priority: "Low",
+      title: "Angebot für Teamtage an Bürostandorten testen",
+      owner: "Vertrieb",
+      priority: "Niedrig",
       status: "pilot",
     },
   ],
@@ -102,7 +102,7 @@ const defaultState = {
     { id: createId(), text: "3 zahlende Pilotkunden bis Ende Q2", done: true },
     { id: createId(), text: "Deckungsbeitrag pro Press-Tag positiv halten", done: false },
     { id: createId(), text: "Mindestens 2 wiederkehrende Abo-Kunden gewinnen", done: false },
-    { id: createId(), text: "Sicherheits- und Bee-Care SOP dokumentieren", done: true },
+    { id: createId(), text: "Sicherheits- und Bienenpflege-Standard dokumentieren", done: true },
   ],
   finance: {
     burnRate: 8500,
@@ -110,7 +110,7 @@ const defaultState = {
     cashBalance: 54000,
   },
   notes:
-    "Wichtigste Annahme: Gemeinden kaufen nicht nur Nachhaltigkeit, sondern sichtbare Buergerbeteiligung. Jeder Pilot muss ein verwertbares Story-Asset erzeugen.",
+    "Wichtigste Annahme: Gemeinden kaufen nicht nur Nachhaltigkeit, sondern sichtbare Bürgerbeteiligung. Jeder Pilot muss ein nutzbares Kommunikationsstück erzeugen.",
 };
 
 let state = loadState();
@@ -182,28 +182,12 @@ function initStorageSync() {
 }
 
 function initSharedMetrics() {
-  const northStarMetric = document.querySelector("#north-star-metric");
-  const plannedSitesMetric = document.querySelector("#planned-sites-metric");
-  const bookedRevenueMetric = document.querySelector("#booked-revenue-metric");
   const startupOrdersMetric = document.querySelector("#startup-orders-metric");
   const startupRevenueMetric = document.querySelector("#startup-revenue-metric");
-  const liters = state.routes.reduce((sum, route) => sum + Number(route.volume || 0), 0);
   const bookedRevenue = state.orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
 
-  if (northStarMetric) {
-    northStarMetric.textContent = `${liters} Liter`;
-  }
-
-  if (plannedSitesMetric) {
-    plannedSitesMetric.textContent = `${state.routes.length} Standorte`;
-  }
-
-  if (bookedRevenueMetric) {
-    bookedRevenueMetric.textContent = euro(bookedRevenue);
-  }
-
   if (startupOrdersMetric) {
-    startupOrdersMetric.textContent = `${state.orders.length} Orders`;
+    startupOrdersMetric.textContent = `${state.orders.length} Aufträge`;
   }
 
   if (startupRevenueMetric) {
@@ -239,7 +223,7 @@ function initCustomerPage() {
     event.preventDefault();
     addCartItem({
       id: createId(),
-      title: `Custom Press Day · ${litersInput.value}L / ${jarsInput.value} Glaeser`,
+      title: `Individueller Press-Tag · ${litersInput.value}L / ${jarsInput.value} Gläser`,
       price: calculateConfigPrice(litersInput, jarsInput, storyPackageInput),
       type: "custom",
     });
@@ -269,17 +253,17 @@ function initCustomerPage() {
     const cardCvc = document.querySelector("#card-cvc").value.trim();
 
     if (!company || !name || !email) {
-      setFeedback(paymentFeedback, "Bitte Kundendaten vollstaendig ausfuellen.", "error");
+      setFeedback(paymentFeedback, "Bitte Kundendaten vollständig ausfüllen.", "error");
       return;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setFeedback(paymentFeedback, "Bitte eine gueltige E-Mail-Adresse eingeben.", "error");
+      setFeedback(paymentFeedback, "Bitte eine gültige E-Mail-Adresse eingeben.", "error");
       return;
     }
 
     if (!/^\d{16}$/.test(cardNumber) || !/^\d{2}\/\d{2}$/.test(cardExpiry) || !/^\d{3,4}$/.test(cardCvc)) {
-      setFeedback(paymentFeedback, "Kartendaten sind formal ungueltig.", "error");
+      setFeedback(paymentFeedback, "Kartendaten sind formal ungültig.", "error");
       return;
     }
 
@@ -541,7 +525,7 @@ function normalizeTasks(tasks, fallback) {
       id: typeof task.id === "string" ? task.id : createId(),
       title: task.title,
       owner: typeof task.owner === "string" ? task.owner : "Team",
-      priority: ["High", "Medium", "Low"].includes(task.priority) ? task.priority : "Medium",
+      priority: normalizePriority(task.priority),
       status: TASK_COLUMNS.some((column) => column.id === task.status) ? task.status : "discover",
     }));
 }
@@ -575,6 +559,19 @@ function normalizeFinance(finance, fallback) {
 function safeNumber(value, fallback = 0) {
   const numeric = Number(value);
   return Number.isFinite(numeric) ? numeric : fallback;
+}
+
+function normalizePriority(priority) {
+  const mapping = {
+    High: "Hoch",
+    Medium: "Mittel",
+    Low: "Niedrig",
+    Hoch: "Hoch",
+    Mittel: "Mittel",
+    Niedrig: "Niedrig",
+  };
+
+  return mapping[priority] || "Mittel";
 }
 
 function setFeedback(element, message, tone) {
@@ -670,7 +667,7 @@ function renderCart(cartList, cartTotalLabel) {
 
   if (!state.cart.length) {
     cartList.innerHTML =
-      '<div class="empty-state">Noch kein Angebot im Warenkorb. Buche einen Piloten oder baue einen Custom Press Day.</div>';
+      '<div class="empty-state">Noch kein Angebot im Warenkorb. Buche einen Piloten oder stelle einen individuellen Press-Tag zusammen.</div>';
     cartTotalLabel.textContent = euro(0);
     return;
   }
@@ -827,7 +824,7 @@ function renderRoutes(routeList, routeCount) {
         </div>
         <div class="cart-actions">
           <time datetime="${route.date}">${new Date(route.date).toLocaleDateString("de-DE")}</time>
-          <button type="button">Loeschen</button>
+          <button type="button">Löschen</button>
         </div>
       `;
       card.querySelector("button").addEventListener("click", () => {
@@ -945,25 +942,25 @@ function renderFinance(financeMetrics) {
   const averageOrder = safeNumber(state.finance.averageOrder);
   const burnRate = safeNumber(state.finance.burnRate);
   const cashBalance = safeNumber(state.finance.cashBalance);
-  const ordersNeeded = averageOrder > 0 ? Math.ceil(burnRate / averageOrder) : "n/a";
+  const ordersNeeded = averageOrder > 0 ? Math.ceil(burnRate / averageOrder) : "k. A.";
   const runwayMonths = burnRate > 0 ? `${(cashBalance / burnRate).toFixed(1)} Monate` : "Unbegrenzt";
   const bookedRevenue = state.orders.reduce((sum, order) => sum + order.total, 0);
 
   financeMetrics.innerHTML = `
     <div class="finance-stat">
-      <span>Orders pro Monat</span>
+      <span>Aufträge pro Monat</span>
       <strong>${ordersNeeded}</strong>
-      <p>So viele durchschnittliche Auftraege brauchst du, um den aktuellen Burn zu decken.</p>
+      <p>So viele durchschnittliche Aufträge brauchst du, um den aktuellen monatlichen Aufwand zu decken.</p>
     </div>
     <div class="finance-stat">
-      <span>Runway</span>
+      <span>Reichweite</span>
       <strong>${runwayMonths}</strong>
-      <p>Auf Basis von Cash im Konto und dem eingetragenen monatlichen Burn.</p>
+      <p>Auf Basis von Kontostand und eingetragenem monatlichen Aufwand.</p>
     </div>
     <div class="finance-stat">
       <span>Bereits verkauft</span>
       <strong>${euro(bookedRevenue)}</strong>
-      <p>Alle Demo-Orders der Kundenseite laufen hier zusammen.</p>
+      <p>Alle Demo-Aufträge der Kundenseite laufen hier zusammen.</p>
     </div>
   `;
 }

@@ -1,17 +1,17 @@
 # Wabenpresse Labs
 
-Lokale Zero-to-One-Demo fuer ein Startup, das urbane Bienenhaltung, mobile Saftpressen und eine operative Management-Oberflaeche verbindet.
+Lokale Demo für ein Projekt, das urbane Bienenhaltung, mobile Saftpressen und eine operative Management-Oberfläche verbindet.
 
 ## Seitenstruktur
 
-- `index.html`: oeffentliche Kundenseite mit Angebot, Pilot-Konfigurator und Demo-Checkout
-- `startup.html`: interner Startup-Bereich mit OKRs, Routen, Kanban, Finance und Order-Log
+- `index.html`: öffentliche Kundenseite mit Angebot, Pilot-Konfigurator und Demo-Buchung
+- `startup.html`: interner Bereich mit OKRs, Routen, Kanban, Finanzen und Auftragslog
 
-## Passwort fuer den Startup-Bereich
+## Passwort für den internen Bereich
 
 - Standardpasswort: `waben2026`
-- Das Passwort wird nur clientseitig geprueft und ist fuer GitHub Pages organisatorisch nuetzlich, aber nicht wirklich sicher.
-- Fuer echte Sicherheit spaeter Backend-Auth oder einen vorgeschalteten Access-Layer nutzen.
+- Das Passwort wird nur clientseitig geprüft und ist für GitHub Pages organisatorisch nützlich, aber nicht wirklich sicher.
+- Für echte Sicherheit später Backend-Authentifizierung oder einen vorgeschalteten Zugriffsschutz nutzen.
 
 ## Start lokal
 
@@ -19,21 +19,21 @@ Lokale Zero-to-One-Demo fuer ein Startup, das urbane Bienenhaltung, mobile Saftp
 npm start
 ```
 
-Dann `http://localhost:4173` im Browser oeffnen.
+Dann `http://localhost:4173` im Browser öffnen.
 
 ## Deployment auf GitHub Pages
 
 - Das Projekt ist statisch und kann direkt aus dem Repo-Root auf GitHub Pages ausgeliefert werden.
-- Nach einem Push auf den konfigurierten Branch aktualisiert GitHub Pages `index.html` und macht `startup.html` als zweite Seite verfuegbar.
-- Der lokale `server.mjs` ist nur fuer die lokale Vorschau gedacht und wird auf GitHub Pages nicht benoetigt.
+- Nach einem Push auf den konfigurierten Branch aktualisiert GitHub Pages `index.html` und macht `startup.html` als zweite Seite verfügbar.
+- Der lokale `server.mjs` ist nur für die lokale Vorschau gedacht und wird auf GitHub Pages nicht benötigt.
 
 ## Was enthalten ist
 
-- Landingpage mit Startup-Konzept, Positionierung und 180-Tage-Plan
+- Landingpage mit Kundenangebot, Positionierung und Leistungsübersicht
 - Produktangebote und ein konfigurierbarer Press-Tag
-- Getrennte Kundenseite und Founder-Seite
-- Organisationsfunktionen mit OKRs, Routenplanung, Kanban, Finance-Modell und Founder-Notizen
-- Demo-Checkout mit lokaler Bestellspeicherung in `localStorage`
+- Getrennte Kundenseite und interner Bereich
+- Organisationsfunktionen mit OKRs, Routenplanung, Kanban, Finanzmodell und internen Notizen
+- Demo-Buchung mit lokaler Speicherung in `localStorage`
 
 ## Produktionsnahe Weiterentwicklung
 
