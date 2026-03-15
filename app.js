@@ -1,3 +1,6 @@
+const STARTUP_PASSWORD = "waben2026";
+const STARTUP_SESSION_KEY = "wabenpresse-founder-auth";
+
 const offers = [
   {
     id: "orchard-launch",
@@ -12,7 +15,7 @@ const offers = [
     id: "press-day",
     title: "Community Press Day",
     description:
-      "Mobile Saftpresse, Abfüllung, Helferbriefing und Live-Verkauf für Gemeinden, Schulen oder Firmenhöfe.",
+      "Mobile Saftpresse, Abfuellung, Helferbriefing und Live-Verkauf fuer Gemeinden, Schulen oder Firmenhoefe.",
     price: 890,
     tag: "Event Umsatz",
     outcome: "Bis zu 600 Liter pro Tag",
@@ -21,7 +24,7 @@ const offers = [
     id: "nectar-subscription",
     title: "Nectar Subscription",
     description:
-      "Monatliche Box mit Saft, Honig und Standortstory für Teams, Kunden oder Anwohner.",
+      "Monatliche Box mit Saft, Honig und Standortstory fuer Teams, Kunden oder Anwohner.",
     price: 39,
     tag: "Recurring Revenue",
     outcome: "Preis pro Box",
@@ -34,14 +37,14 @@ const phases = [
     title: "Problem / ICP",
     metric: "10 Tiefeninterviews, 3 bezahlte Piloten",
     details:
-      "Fokus auf Gemeinden mit Streuobst, Biohöfe mit Tourismusbezug und Firmenstandorte mit ESG-Budget.",
+      "Fokus auf Gemeinden mit Streuobst, Biohoefe mit Tourismusbezug und Firmenstandorte mit ESG-Budget.",
   },
   {
     phase: "Phase 02",
     title: "Pilot Ops",
-    metric: "90% pünktliche Press-Tage",
+    metric: "90% puenktliche Press-Tage",
     details:
-      "Standardisierte Sicherheitsabläufe, Presslogistik, Bee-Care Checklists und ein fester Wochenrhythmus.",
+      "Standardisierte Sicherheitsablaeufe, Presslogistik, Bee-Care Checklists und ein fester Wochenrhythmus.",
   },
   {
     phase: "Phase 03",
@@ -55,7 +58,7 @@ const phases = [
     title: "Cluster Expansion",
     metric: "Eine Stadt, ein Vertriebsskript, positive Unit Economics",
     details:
-      "Erst lokal dominieren, dann benachbarte Landkreise mit denselben Maschinen, Wegen und Narrativen erschließen.",
+      "Erst lokal dominieren, dann benachbarte Landkreise mit denselben Maschinen, Wegen und Narrativen erschliessen.",
   },
 ];
 
@@ -69,7 +72,7 @@ const defaultState = {
   tasks: [
     {
       id: crypto.randomUUID(),
-      title: "Pilotvertrag für ersten Gemeindestandort abschließen",
+      title: "Pilotvertrag fuer ersten Gemeindestandort abschliessen",
       owner: "Christoph",
       priority: "High",
       status: "discover",
@@ -83,7 +86,7 @@ const defaultState = {
     },
     {
       id: crypto.randomUUID(),
-      title: "Employer-Branding-Angebot für Offices testen",
+      title: "Employer-Branding-Angebot fuer Offices testen",
       owner: "Sales",
       priority: "Low",
       status: "pilot",
@@ -101,64 +104,198 @@ const defaultState = {
     cashBalance: 54000,
   },
   notes:
-    "Wichtigste Annahme: Gemeinden kaufen nicht nur Nachhaltigkeit, sondern sichtbare Bürgerbeteiligung. Jeder Pilot muss ein verwertbares Story-Asset erzeugen.",
+    "Wichtigste Annahme: Gemeinden kaufen nicht nur Nachhaltigkeit, sondern sichtbare Buergerbeteiligung. Jeder Pilot muss ein verwertbares Story-Asset erzeugen.",
 };
 
 const state = loadState();
 
-const productGrid = document.querySelector("#product-grid");
-const configForm = document.querySelector("#config-form");
-const litersInput = document.querySelector("#liters");
-const jarsInput = document.querySelector("#jars");
-const storyPackageInput = document.querySelector("#story-package");
-const configPrice = document.querySelector("#config-price");
-const cartList = document.querySelector("#cart-list");
-const cartTotalLabel = document.querySelector("#cart-total-label");
-const orderList = document.querySelector("#order-list");
-const clearOrdersButton = document.querySelector("#clear-orders");
-const paymentForm = document.querySelector("#payment-form");
-const paymentFeedback = document.querySelector("#payment-feedback");
-const okrList = document.querySelector("#okr-list");
-const okrProgress = document.querySelector("#okr-progress");
-const routeForm = document.querySelector("#route-form");
-const routeList = document.querySelector("#route-list");
-const routeCount = document.querySelector("#route-count");
-const taskForm = document.querySelector("#task-form");
-const kanban = document.querySelector("#kanban");
-const financeForm = document.querySelector("#finance-form");
-const financeMetrics = document.querySelector("#finance-metrics");
-const founderNotes = document.querySelector("#founder-notes");
-const timeline = document.querySelector("#timeline");
-const northStarMetric = document.querySelector("#north-star-metric");
+document.addEventListener("DOMContentLoaded", () => {
+  initSharedMetrics();
+  initCustomerPage();
+  initStartupPage();
+});
 
-bootstrap();
+function initSharedMetrics() {
+  const northStarMetric = document.querySelector("#north-star-metric");
+  if (!northStarMetric) {
+    return;
+  }
 
-function bootstrap() {
-  renderProducts();
-  renderTimeline();
-  renderCart();
-  renderOrders();
-  renderOkrs();
-  renderRoutes();
-  renderTasks();
-  renderFinance();
-  founderNotes.value = state.notes;
-  updateConfiguratorPrice();
-  updateNorthStarMetric();
+  const liters = state.routes.reduce((sum, route) => sum + Number(route.volume || 0), 0);
+  northStarMetric.textContent = `${liters} Liter`;
+}
 
-  configForm.addEventListener("submit", handleConfigSubmit);
-  litersInput.addEventListener("input", updateConfiguratorPrice);
-  jarsInput.addEventListener("input", updateConfiguratorPrice);
-  storyPackageInput.addEventListener("input", updateConfiguratorPrice);
-  clearOrdersButton.addEventListener("click", clearOrders);
-  paymentForm.addEventListener("submit", handlePayment);
-  routeForm.addEventListener("submit", handleRouteSubmit);
-  taskForm.addEventListener("submit", handleTaskSubmit);
-  financeForm.addEventListener("submit", handleFinanceSubmit);
-  founderNotes.addEventListener("input", () => {
-    state.notes = founderNotes.value;
+function initCustomerPage() {
+  const productGrid = document.querySelector("#product-grid");
+  if (!productGrid) {
+    return;
+  }
+
+  const configForm = document.querySelector("#config-form");
+  const litersInput = document.querySelector("#liters");
+  const jarsInput = document.querySelector("#jars");
+  const storyPackageInput = document.querySelector("#story-package");
+  const configPrice = document.querySelector("#config-price");
+  const cartList = document.querySelector("#cart-list");
+  const cartTotalLabel = document.querySelector("#cart-total-label");
+  const paymentForm = document.querySelector("#payment-form");
+  const paymentFeedback = document.querySelector("#payment-feedback");
+  const timeline = document.querySelector("#timeline");
+
+  renderProducts(productGrid);
+  renderTimeline(timeline);
+  renderCart(cartList, cartTotalLabel);
+  updateConfiguratorPrice(litersInput, jarsInput, storyPackageInput, configPrice);
+
+  configForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    addCartItem({
+      id: crypto.randomUUID(),
+      title: `Custom Press Day · ${litersInput.value}L / ${jarsInput.value} Glaeser`,
+      price: calculateConfigPrice(litersInput, jarsInput, storyPackageInput),
+      type: "custom",
+    });
+    renderCart(cartList, cartTotalLabel);
+  });
+
+  [litersInput, jarsInput, storyPackageInput].forEach((input) => {
+    input.addEventListener("input", () => {
+      updateConfiguratorPrice(litersInput, jarsInput, storyPackageInput, configPrice);
+    });
+  });
+
+  paymentForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    paymentFeedback.textContent = "";
+
+    if (!state.cart.length) {
+      paymentFeedback.textContent = "Der Warenkorb ist leer.";
+      return;
+    }
+
+    const company = document.querySelector("#customer-company").value.trim();
+    const name = document.querySelector("#customer-name").value.trim();
+    const email = document.querySelector("#customer-email").value.trim();
+    const cardNumber = document.querySelector("#card-number").value.replace(/\s+/g, "");
+    const cardExpiry = document.querySelector("#card-expiry").value.trim();
+    const cardCvc = document.querySelector("#card-cvc").value.trim();
+
+    if (!company || !name || !email) {
+      paymentFeedback.textContent = "Bitte Kundendaten vollstaendig ausfuellen.";
+      return;
+    }
+
+    if (!/^\d{16}$/.test(cardNumber) || !/^\d{2}\/\d{2}$/.test(cardExpiry) || !/^\d{3,4}$/.test(cardCvc)) {
+      paymentFeedback.textContent = "Kartendaten sind formal ungueltig.";
+      return;
+    }
+
+    const order = {
+      id: `WP-${Math.floor(Math.random() * 900000 + 100000)}`,
+      company,
+      name,
+      email,
+      total: cartTotal(),
+      items: state.cart.map((item) => ({ ...item })),
+      createdAt: new Date().toISOString(),
+    };
+
+    state.orders.unshift(order);
+    state.cart = [];
+    persistState();
+    renderCart(cartList, cartTotalLabel);
+    paymentForm.reset();
+    paymentFeedback.textContent = `Zahlung erfolgreich autorisiert. Bestellnummer ${order.id}.`;
+  });
+}
+
+function initStartupPage() {
+  const startupRoot = document.querySelector("#startup-root");
+  if (!startupRoot) {
+    return;
+  }
+
+  const gate = document.querySelector("#startup-gate");
+  const content = document.querySelector("#startup-content");
+  const form = document.querySelector("#startup-password-form");
+  const feedback = document.querySelector("#startup-feedback");
+  const passwordInput = document.querySelector("#startup-password");
+  const logoutButton = document.querySelector("#logout-button");
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    feedback.textContent = "";
+
+    const password = passwordInput.value.trim();
+    if (!password) {
+      feedback.textContent = "Bitte ein Passwort eingeben.";
+      return;
+    }
+
+    if (password !== STARTUP_PASSWORD) {
+      feedback.textContent = "Passwort falsch.";
+      return;
+    }
+
+    window.sessionStorage.setItem(STARTUP_SESSION_KEY, "true");
+    passwordInput.value = "";
+    unlockStartupArea(gate, content);
+    initStartupDashboard();
+  });
+
+  logoutButton.addEventListener("click", () => {
+    window.sessionStorage.removeItem(STARTUP_SESSION_KEY);
+    lockStartupArea(gate, content);
+    feedback.textContent = "";
+  });
+
+  if (window.sessionStorage.getItem(STARTUP_SESSION_KEY) === "true") {
+    unlockStartupArea(gate, content);
+    initStartupDashboard();
+  } else {
+    lockStartupArea(gate, content);
+  }
+}
+
+let startupDashboardInitialized = false;
+
+function initStartupDashboard() {
+  if (startupDashboardInitialized) {
+    renderStartupData();
+    return;
+  }
+
+  startupDashboardInitialized = true;
+
+  document.querySelector("#route-form").addEventListener("submit", handleRouteSubmit);
+  document.querySelector("#task-form").addEventListener("submit", handleTaskSubmit);
+  document.querySelector("#finance-form").addEventListener("submit", handleFinanceSubmit);
+  document.querySelector("#clear-orders").addEventListener("click", clearOrders);
+  document.querySelector("#founder-notes").addEventListener("input", (event) => {
+    state.notes = event.target.value;
     persistState();
   });
+
+  renderStartupData();
+}
+
+function renderStartupData() {
+  renderOkrs(document.querySelector("#okr-list"), document.querySelector("#okr-progress"));
+  renderRoutes(document.querySelector("#route-list"), document.querySelector("#route-count"));
+  renderTasks(document.querySelector("#kanban"));
+  renderFinance(document.querySelector("#finance-metrics"));
+  renderOrders(document.querySelector("#order-list"));
+  document.querySelector("#founder-notes").value = state.notes;
+}
+
+function unlockStartupArea(gate, content) {
+  gate.classList.add("is-hidden");
+  content.classList.remove("is-locked");
+}
+
+function lockStartupArea(gate, content) {
+  gate.classList.remove("is-hidden");
+  content.classList.add("is-locked");
 }
 
 function loadState() {
@@ -191,7 +328,7 @@ function euro(amount) {
   }).format(amount);
 }
 
-function renderProducts() {
+function renderProducts(productGrid) {
   productGrid.innerHTML = "";
 
   offers.forEach((offer) => {
@@ -219,13 +356,19 @@ function renderProducts() {
         price: offer.price,
         type: "offer",
       });
+
+      const cartList = document.querySelector("#cart-list");
+      const cartTotalLabel = document.querySelector("#cart-total-label");
+      if (cartList && cartTotalLabel) {
+        renderCart(cartList, cartTotalLabel);
+      }
     });
 
     productGrid.append(card);
   });
 }
 
-function calculateConfigPrice() {
+function calculateConfigPrice(litersInput, jarsInput, storyPackageInput) {
   const liters = Number(litersInput.value || 0);
   const jars = Number(jarsInput.value || 0);
   const storytelling = Number(storyPackageInput.value || 0);
@@ -235,18 +378,10 @@ function calculateConfigPrice() {
   return Math.round(base + volumePrice + honeyPrice + storytelling);
 }
 
-function updateConfiguratorPrice() {
-  configPrice.textContent = `Aktueller Pilotpreis: ${euro(calculateConfigPrice())}`;
-}
-
-function handleConfigSubmit(event) {
-  event.preventDefault();
-  addCartItem({
-    id: crypto.randomUUID(),
-    title: `Custom Press Day · ${litersInput.value}L / ${jarsInput.value} Glaeser`,
-    price: calculateConfigPrice(),
-    type: "custom",
-  });
+function updateConfiguratorPrice(litersInput, jarsInput, storyPackageInput, configPrice) {
+  configPrice.textContent = `Aktueller Pilotpreis: ${euro(
+    calculateConfigPrice(litersInput, jarsInput, storyPackageInput),
+  )}`;
 }
 
 function addCartItem(item) {
@@ -258,14 +393,14 @@ function addCartItem(item) {
   }
 
   persistState();
-  renderCart();
 }
 
-function renderCart() {
+function renderCart(cartList, cartTotalLabel) {
   cartList.innerHTML = "";
 
   if (!state.cart.length) {
-    cartList.innerHTML = `<div class="empty-state">Noch kein Angebot im Warenkorb. Buche einen Piloten oder baue einen Custom Press Day.</div>`;
+    cartList.innerHTML =
+      '<div class="empty-state">Noch kein Angebot im Warenkorb. Buche einen Piloten oder baue einen Custom Press Day.</div>';
     cartTotalLabel.textContent = euro(0);
     return;
   }
@@ -298,7 +433,7 @@ function renderCart() {
           state.cart = state.cart.filter((entry) => entry !== item);
         }
         persistState();
-        renderCart();
+        renderCart(cartList, cartTotalLabel);
       });
     });
 
@@ -312,57 +447,11 @@ function cartTotal() {
   return state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 }
 
-function handlePayment(event) {
-  event.preventDefault();
-  paymentFeedback.textContent = "";
-
-  if (!state.cart.length) {
-    paymentFeedback.textContent = "Der Warenkorb ist leer.";
-    return;
-  }
-
-  const company = document.querySelector("#customer-company").value.trim();
-  const name = document.querySelector("#customer-name").value.trim();
-  const email = document.querySelector("#customer-email").value.trim();
-  const cardNumber = document.querySelector("#card-number").value.replace(/\s+/g, "");
-  const cardExpiry = document.querySelector("#card-expiry").value.trim();
-  const cardCvc = document.querySelector("#card-cvc").value.trim();
-
-  if (!company || !name || !email) {
-    paymentFeedback.textContent = "Bitte Kundendaten vollständig ausfüllen.";
-    return;
-  }
-
-  if (!/^\d{16}$/.test(cardNumber) || !/^\d{2}\/\d{2}$/.test(cardExpiry) || !/^\d{3,4}$/.test(cardCvc)) {
-    paymentFeedback.textContent = "Kartendaten sind formal ungültig.";
-    return;
-  }
-
-  const order = {
-    id: `WP-${Math.floor(Math.random() * 900000 + 100000)}`,
-    company,
-    name,
-    email,
-    total: cartTotal(),
-    items: state.cart.map((item) => ({ ...item })),
-    createdAt: new Date().toISOString(),
-  };
-
-  state.orders.unshift(order);
-  state.cart = [];
-  persistState();
-
-  paymentForm.reset();
-  renderCart();
-  renderOrders();
-  paymentFeedback.textContent = `Zahlung erfolgreich autorisiert. Bestellnummer ${order.id}.`;
-}
-
-function renderOrders() {
+function renderOrders(orderList) {
   orderList.innerHTML = "";
 
   if (!state.orders.length) {
-    orderList.innerHTML = `<div class="empty-state">Noch keine Bestellungen gespeichert.</div>`;
+    orderList.innerHTML = '<div class="empty-state">Noch keine Bestellungen gespeichert.</div>';
     return;
   }
 
@@ -384,10 +473,11 @@ function renderOrders() {
 function clearOrders() {
   state.orders = [];
   persistState();
-  renderOrders();
+  renderOrders(document.querySelector("#order-list"));
+  renderFinance(document.querySelector("#finance-metrics"));
 }
 
-function renderOkrs() {
+function renderOkrs(okrList, okrProgress) {
   okrList.innerHTML = "";
   const done = state.okrs.filter((item) => item.done).length;
   const progress = Math.round((done / state.okrs.length) * 100);
@@ -403,7 +493,7 @@ function renderOkrs() {
     row.querySelector("input").addEventListener("change", (event) => {
       item.done = event.target.checked;
       persistState();
-      renderOkrs();
+      renderOkrs(okrList, okrProgress);
     });
     okrList.append(row);
   });
@@ -423,17 +513,17 @@ function handleRouteSubmit(event) {
   });
 
   persistState();
-  renderRoutes();
-  updateNorthStarMetric();
-  routeForm.reset();
+  renderRoutes(document.querySelector("#route-list"), document.querySelector("#route-count"));
+  initSharedMetrics();
+  event.target.reset();
 }
 
-function renderRoutes() {
+function renderRoutes(routeList, routeCount) {
   routeList.innerHTML = "";
   routeCount.textContent = `${state.routes.length} Routen`;
 
   if (!state.routes.length) {
-    routeList.innerHTML = `<div class="empty-state">Keine Pilot-Route geplant.</div>`;
+    routeList.innerHTML = '<div class="empty-state">Keine Pilot-Route geplant.</div>';
     return;
   }
 
@@ -456,8 +546,8 @@ function renderRoutes() {
       card.querySelector("button").addEventListener("click", () => {
         state.routes = state.routes.filter((entry) => entry.id !== route.id);
         persistState();
-        renderRoutes();
-        updateNorthStarMetric();
+        renderRoutes(routeList, routeCount);
+        initSharedMetrics();
       });
       routeList.append(card);
     });
@@ -478,11 +568,11 @@ function handleTaskSubmit(event) {
   });
 
   persistState();
-  renderTasks();
-  taskForm.reset();
+  renderTasks(document.querySelector("#kanban"));
+  event.target.reset();
 }
 
-function renderTasks() {
+function renderTasks(kanban) {
   const columns = [
     { id: "discover", label: "Discover" },
     { id: "build", label: "Build" },
@@ -527,7 +617,7 @@ function renderTasks() {
           button.addEventListener("click", () => {
             task.status = target.id;
             persistState();
-            renderTasks();
+            renderTasks(kanban);
           });
           actions.append(button);
         });
@@ -538,7 +628,7 @@ function renderTasks() {
       removeButton.addEventListener("click", () => {
         state.tasks = state.tasks.filter((entry) => entry.id !== task.id);
         persistState();
-        renderTasks();
+        renderTasks(kanban);
       });
       actions.append(removeButton);
       stack.append(card);
@@ -548,10 +638,16 @@ function renderTasks() {
   });
 }
 
-function renderFinance() {
-  document.querySelector("#burn-rate").value = state.finance.burnRate;
-  document.querySelector("#average-order").value = state.finance.averageOrder;
-  document.querySelector("#cash-balance").value = state.finance.cashBalance;
+function renderFinance(financeMetrics) {
+  const burnRateInput = document.querySelector("#burn-rate");
+  const averageOrderInput = document.querySelector("#average-order");
+  const cashBalanceInput = document.querySelector("#cash-balance");
+
+  if (burnRateInput && averageOrderInput && cashBalanceInput) {
+    burnRateInput.value = state.finance.burnRate;
+    averageOrderInput.value = state.finance.averageOrder;
+    cashBalanceInput.value = state.finance.cashBalance;
+  }
 
   const ordersNeeded = Math.ceil(state.finance.burnRate / state.finance.averageOrder);
   const runwayMonths = (state.finance.cashBalance / state.finance.burnRate).toFixed(1);
@@ -561,7 +657,7 @@ function renderFinance() {
     <div class="finance-stat">
       <span>Orders pro Monat</span>
       <strong>${ordersNeeded}</strong>
-      <p>So viele durchschnittliche Aufträge brauchst du, um den aktuellen Burn zu decken.</p>
+      <p>So viele durchschnittliche Auftraege brauchst du, um den aktuellen Burn zu decken.</p>
     </div>
     <div class="finance-stat">
       <span>Runway</span>
@@ -569,9 +665,9 @@ function renderFinance() {
       <p>Auf Basis von Cash im Konto und dem eingetragenen monatlichen Burn.</p>
     </div>
     <div class="finance-stat">
-      <span>Bereits im Demo-Checkout verkauft</span>
+      <span>Bereits verkauft</span>
       <strong>${euro(bookedRevenue)}</strong>
-      <p>Lokale Orders helfen, Preispunkte und Paketlogik sofort gegen deine Hypothesen zu testen.</p>
+      <p>Alle Demo-Orders der Kundenseite laufen hier zusammen.</p>
     </div>
   `;
 }
@@ -584,10 +680,10 @@ function handleFinanceSubmit(event) {
     cashBalance: Number(document.querySelector("#cash-balance").value),
   };
   persistState();
-  renderFinance();
+  renderFinance(document.querySelector("#finance-metrics"));
 }
 
-function renderTimeline() {
+function renderTimeline(timeline) {
   timeline.innerHTML = "";
   phases.forEach((phase) => {
     const card = document.createElement("article");
@@ -600,9 +696,4 @@ function renderTimeline() {
     `;
     timeline.append(card);
   });
-}
-
-function updateNorthStarMetric() {
-  const liters = state.routes.reduce((sum, route) => sum + route.volume, 0);
-  northStarMetric.textContent = `${liters} Liter`;
 }

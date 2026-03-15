@@ -99,12 +99,26 @@ body::before {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+  align-items: center;
 }
 
 .topnav a {
   font-size: 0.92rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
+}
+
+.nav-button {
+  border: 1px solid rgba(255, 251, 239, 0.28);
+  background: transparent;
+  color: var(--text-light);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.86rem;
 }
 
 .eyebrow,
@@ -284,6 +298,10 @@ body::before {
 
 .section {
   margin-top: 68px;
+}
+
+.startup-hero {
+  margin-bottom: 18px;
 }
 
 .section-heading {
@@ -572,6 +590,24 @@ textarea {
 
 .notes-label {
   width: 100%;
+}
+
+.login-gate {
+  max-width: 560px;
+  margin: 0 auto 28px;
+}
+
+.login-form {
+  display: grid;
+  gap: 14px;
+}
+
+.startup-content.is-locked {
+  display: none;
+}
+
+.is-hidden {
+  display: none;
 }
 
 .timeline {
